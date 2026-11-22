@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VZYN FF PANEL V10</string>
+    <string name="channel_overlay">VZYN Overlay</string>
+    <string name="channel_overlay_desc">Floating bubble and crosshair</string>
+</resources>

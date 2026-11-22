@@ -1,0 +1,2 @@
+-keep class com.vzyn.ffpanel.** { *; }
+-dontwarn kotlinx.coroutines.**
