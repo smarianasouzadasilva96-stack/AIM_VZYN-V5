@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.material3.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,7 +29,8 @@ class MainActivity : ComponentActivity() {
                 androidx.compose.material3.MaterialTheme {
                     androidx.compose.foundation.layout.Column(
                         modifier = androidx.compose.ui.Modifier.fillMaxSize().padding(24.dp),
-                        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+                        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         androidx.compose.material3.Text("VZYN FF PANEL V10 — ACESSO")
                         androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(16.dp))
