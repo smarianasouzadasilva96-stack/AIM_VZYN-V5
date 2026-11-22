@@ -254,7 +254,8 @@ class OverlayService : LifecycleService() {
         bubble?.let {
             val size = dp(state.num("bubble_size"))
             if (bubbleParams.width != size) {
-                bubbleParams.width = size                bubbleParams.height = size
+                bubbleParams.width = size
+                bubbleParams.height = size
                 runCatching { wm.updateViewLayout(it, bubbleParams) }
             }
             it.alpha = (state.num("bubble_opacity") / 100f).coerceIn(0.2f, 1f)
