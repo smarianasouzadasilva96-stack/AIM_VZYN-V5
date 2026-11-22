@@ -10,7 +10,7 @@ import android.os.Environment
 import android.os.Process
 import android.os.StatFs
 import android.os.SystemClock
-import java.io.File
+import android.net.TrafficStats
 
 data class PerfSnapshot(
     val ramUsedMb: Long,
@@ -28,7 +28,8 @@ class PerfSampler(private val context: Context) {
 
     private var lastCpuMs = 0L
     private var lastWall = 0L
-    private var lastRx = 0L
+    private var lastRx = -1L
+    private var lastNetworkMs = 0L
 
     fun sample(): PerfSnapshot {
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -81,17 +82,17 @@ class PerfSampler(private val context: Context) {
         Runtime.getRuntime().availableProcessors().coerceAtLeast(1).toFloat()
 
     private fun networkThroughput(): Float {
-        val rx = File("/proc/self/net/dev").let { f ->
-            runCatching {
-                f.readLines().drop(1).sumOf { line ->
-                    line.substringAfter(':').trim().split(Regex("\\s+"))
-                        .getOrNull(0)?.toLongOrNull() ?: 0L
-                }
-            }.getOrDefault(0L)
-        }
-        val delta = rx - lastRx
+        val rx = TrafficStats.getUidRxBytes(Process.myUid())
+        val now = SystemClock.elapsedRealtime()
+        val result = if (rx != TrafficStats.UNSUPPORTED &&
+            lastRx >= 0L && now > lastNetworkMs && rx >= lastRx
+        ) {
+            val bits = (rx - lastRx).toDouble() * 8.0
+            (bits * 1000.0 / (now - lastNetworkMs) / 1_000_000.0).toFloat()
+        } else 0f
         lastRx = rx
-        return if (delta <= 0) 0f else (delta / 1024f / 1024f * 8f)
+        lastNetworkMs = now
+        return result.coerceAtLeast(0f)
     }
 
     fun deviceSummary(): String = buildString {
